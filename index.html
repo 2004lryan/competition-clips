@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>竞赛资料收集</title>
+<meta name="description" content="四类大学生竞赛的公众号文章收集：数学建模、统计建模、市场调研、创新创业">
+<style>
+/* 版式：顶部四块页签＝四类竞赛；页签下面是贴链接的收件框；再往下是卡片网格。
+   卡片有两种状态：待整理（只有链接）→ 已整理（有标题、公众号、分类和一句话说明）。
+   每个页签有自己的色：数学建模＝钢蓝，统计建模＝松绿，市场调研＝赭黄，创赛＝酒红。
+   国内直连打开：不引外部字体和脚本，全部内联。 */
+:root {
+  color-scheme: light;
+  --bg: #F3F5F4;
+  --surface: #FFFFFF;
+  --sunken: #EAEEEC;
+  --ink: #1B2024;
+  --ink-2: #48525A;
+  --ink-3: #6E787F;
+  --line: #D9DFDD;
+  --line-2: #E7EBE9;
+  --math: #2455A0;
+  --stat: #2B7350;
+  --market: #9C5A12;
+  --innov: #8A3A5C;
+  --danger: #B0412A;
+  --ok: #2B7350;
+  --pending: #9C5A12;
+  --overlay: rgba(16, 20, 24, 0.48);
+  --on-accent: #FFFFFF;
+  --font-display: "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", "SimSun", serif;
+  --font-body: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --accent: var(--math);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121518; --surface: #1A1E22; --sunken: #15191C; --ink: #E6EAEC; --ink-2: #B2BBC1; --ink-3: #8D979E;
+    --line: #2C3237; --line-2: #242A2E; --math: #7AA6EA; --stat: #6FC196; --market: #E0A457; --innov: #E48FB0;
+    --danger: #EE8A72; --ok: #6FC196; --pending: #E0A457; --overlay: rgba(0, 0, 0, 0.6); --on-accent: #0F1215; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121518; --surface: #1A1E22; --sunken: #15191C; --ink: #E6EAEC; --ink-2: #B2BBC1; --ink-3: #8D979E;
+  --line: #2C3237; --line-2: #242A2E; --math: #7AA6EA; --stat: #6FC196; --market: #E0A457; --innov: #E48FB0;
+  --danger: #EE8A72; --ok: #6FC196; --pending: #E0A457; --overlay: rgba(0, 0, 0, 0.6); --on-accent: #0F1215; color-scheme: dark;
+}
+body[data-tab="math"] { --accent: var(--math); }
+body[data-tab="stat"] { --accent: var(--stat); }
+body[data-tab="market"] { --accent: var(--market); }
+body[data-tab="innovation"] { --accent: var(--innov); }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.7; }
+[hidden] { display: none !important; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: calc(20px + env(safe-area-inset-top, 0px)) calc(56px + env(safe-area-inset-bottom, 0px)); display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+.wrap > *, .toolbar > *, .inbox > * { min-width: 0; }
+button, input, textarea, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+
+/* 页头 */
+.masthead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 20px; }
+.masthead h1 { margin: 0; font-family: var(--font-display); font-weight: 600; font-size: 26px; letter-spacing: 0.02em; text-wrap: balance; }
+.masthead p { margin: 0; color: var(--ink-3); font-size: 13px; max-width: 40em; }
+.banner { border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 10px 14px; font-size: 13px; color: var(--ink-2); }
+.banner strong { font-weight: 600; color: var(--ink); }
+
+/* 四个页签 */
+.tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); background: var(--surface); border-radius: 8px; overflow: hidden; }
+.tab { display: grid; gap: 4px; align-content: start; text-align: left; padding: 16px 16px 14px; border: 0; border-right: 1px solid var(--line-2); background: transparent; position: relative; min-width: 0; }
+.tab:last-child { border-right: 0; }
+.tab::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: transparent; }
+.tab[aria-selected="true"] { background: color-mix(in srgb, var(--tab-color) 6%, var(--surface)); }
+.tab[aria-selected="true"]::after { background: var(--tab-color); }
+.tab-name { font-family: var(--font-display); font-weight: 600; font-size: 21px; line-height: 1.3; color: var(--ink); }
+.tab[aria-selected="true"] .tab-name { color: var(--tab-color); }
+.tab-sub { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+.tab-meta { display: flex; flex-wrap: wrap; gap: 2px 10px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.tab-meta .todo-n { color: var(--pending); font-weight: 500; }
+.tab[data-key="math"] { --tab-color: var(--math); }
+.tab[data-key="stat"] { --tab-color: var(--stat); }
+.tab[data-key="market"] { --tab-color: var(--market); }
+.tab[data-key="innovation"] { --tab-color: var(--innov); }
+
+/* 贴链接的收件框 */
+.inbox { display: grid; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.inbox label, .inbox .lbl { font-size: 13px; font-weight: 500; color: var(--ink-2); }
+.inbox label b { color: var(--accent); font-weight: 600; }
+.inbox textarea { width: 100%; min-height: 84px; resize: vertical; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); padding: 9px 11px; font-family: var(--font-mono); font-size: 13px; line-height: 1.6; }
+.inbox textarea:focus, .inbox input:focus { border-color: var(--accent); outline: none; background: var(--surface); }
+.inbox-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 12px; }
+.inbox-fields .f { display: grid; gap: 4px; min-width: 0; }
+.inbox input { width: 100%; height: 36px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); padding: 0 11px; }
+.inbox input[aria-invalid="true"] { border-color: var(--danger); }
+.hint { font-size: 12px; color: var(--ink-3); line-height: 1.6; }
+.inbox-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.inbox-info { font-size: 13px; color: var(--ink-3); }
+.inbox-info.warn { color: var(--danger); }
+
+/* 工具条 */
+.toolbar { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.search { width: 100%; height: 38px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.btn { height: 38px; padding: 0 16px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); font-weight: 500; white-space: nowrap; }
+.btn:hover { border-color: var(--ink-3); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); }
+.btn-link { display: inline-flex; align-items: center; justify-self: start; text-decoration: none; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; scrollbar-width: thin; }
+.chip { flex: none; height: 30px; padding: 0 12px; border-radius: 15px; border: 1px solid var(--line); background: var(--surface); font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, var(--surface)); font-weight: 500; }
+.chip-label { flex: none; align-self: center; font-size: 12px; color: var(--ink-3); padding-right: 2px; }
+.status { font-size: 13px; color: var(--ink-2); }
+
+/* 卡片 */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 14px; align-items: start; }
+.card { display: grid; text-align: left; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); overflow: hidden; min-width: 0; transition: border-color .15s; }
+.card:hover { border-color: var(--accent); }
+.card-body { display: grid; gap: 8px; padding: 14px 16px; min-width: 0; }
+.card-title { margin: 0; font-size: 16px; font-weight: 600; line-height: 1.5; color: var(--ink); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-wrap: balance; }
+.card-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 12.5px; color: var(--ink-3); min-width: 0; }
+.card-meta .acct { color: var(--ink-2); font-weight: 500; overflow-wrap: anywhere; }
+.tag { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 4px; font-size: 12px; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); color: var(--accent); font-weight: 500; }
+.tag.plain { background: var(--sunken); color: var(--ink-2); }
+.card-excerpt { margin: 0; font-size: 13.5px; color: var(--ink-2); line-height: 1.75; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.card-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; padding-top: 2px; }
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; }
+.pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.pill.todo { color: var(--ink-3); }
+.pill.done { color: var(--ok); }
+.pill.failed { color: var(--danger); }
+.card.link-only { border-style: dashed; }
+.card-url { margin: 0; font-family: var(--font-mono); font-size: 12.5px; line-height: 1.6; color: var(--ink-2); overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.card-wait { font-size: 14px; font-weight: 500; color: var(--ink-2); margin: 0; }
+.card-err { margin: 0; font-size: 12.5px; color: var(--danger); overflow-wrap: anywhere; }
+.card.ghost { border-style: dashed; background: transparent; cursor: default; }
+.card.ghost:hover { border-color: var(--line); }
+.card.ghost .card-body { opacity: 0.72; }
+.ghost-label { font-size: 11px; letter-spacing: 0.08em; color: var(--ink-3); border: 1px solid var(--line); border-radius: 3px; padding: 0 6px; }
+.empty { display: grid; gap: 14px; grid-template-columns: minmax(0, 1fr) minmax(0, 300px); align-items: start; padding: 22px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.empty h2 { margin: 0 0 6px; font-size: 17px; font-weight: 600; }
+.empty p { margin: 0; color: var(--ink-2); font-size: 14px; max-width: 34em; }
+.empty ol { margin: 10px 0 0; padding-left: 1.3em; color: var(--ink-2); font-size: 14px; display: grid; gap: 4px; }
+.noresult { padding: 28px 0; color: var(--ink-3); font-size: 14px; }
+.more { justify-self: center; }
+
+/* 查看 */
+dialog { border: 0; padding: 0; background: transparent; max-width: none; max-height: none; color: var(--ink); }
+dialog::backdrop { background: var(--overlay); }
+.sheet { width: min(860px, calc(100vw - 32px)); max-height: calc(100vh - 48px); max-height: calc(100dvh - 48px); display: grid; grid-template-rows: auto minmax(0, 1fr) auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--line-2); }
+.sheet-head h2 { margin: 0; font-size: 17px; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.sheet-main { overflow: auto; padding: 18px 20px; }
+.sheet-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; padding: 12px 20px; border-top: 1px solid var(--line-2); }
+.x { width: 34px; height: 34px; border: 1px solid transparent; border-radius: 6px; background: transparent; color: var(--ink-3); font-size: 20px; line-height: 1; flex: none; }
+.x:hover { border-color: var(--line); color: var(--ink); }
+.detail { display: grid; gap: 16px; max-width: 760px; }
+.detail-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13px; color: var(--ink-3); }
+.detail-meta a, .detail-url a { color: var(--accent); overflow-wrap: anywhere; }
+.detail-url { font-family: var(--font-mono); font-size: 13px; overflow-wrap: anywhere; }
+.detail-note { border-left: 3px solid var(--line); padding: 2px 0 2px 12px; color: var(--ink-2); font-size: 14px; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+.toast { position: fixed; left: 0; right: 0; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); margin-inline: auto; width: max-content; max-width: calc(100vw - 32px); background: var(--ink); color: var(--bg); padding: 8px 16px; border-radius: 6px; font-size: 13.5px; z-index: 60; }
+.foot { font-size: 12px; color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 4px 16px; }
+
+@media (max-width: 900px) {
+  .tab-sub { display: none; }
+}
+@media (max-width: 720px) {
+  .wrap { gap: 14px; }
+  .masthead h1 { font-size: 22px; }
+  .tab { padding: 11px 8px 10px; }
+  .tab-name { font-size: 15.5px; }
+  .tab-meta { font-size: 11px; }
+  .inbox-fields { grid-template-columns: minmax(0, 1fr); }
+  .empty { grid-template-columns: minmax(0, 1fr); }
+  .sheet { width: calc(100vw - 24px); }
+  .sheet-head, .sheet-main, .sheet-foot { padding-left: 16px; padding-right: 16px; }
+  .inbox-row .btn { flex: 1 1 auto; }
+}
+</style>
+</head>
+<body data-tab="math">
+<div class="wrap">
+  <header class="masthead">
+    <h1>竞赛资料收集</h1>
+    <p>看到有用的公众号文章，把链接贴进对应的竞赛就行；标题、公众号、分类和一句话说明之后统一整理补上。</p>
+  </header>
+
+  <div id="banner" class="banner" role="status" hidden></div>
+
+  <nav class="tabs" role="tablist" aria-label="四类竞赛" id="tabs"></nav>
+
+  <section class="inbox" aria-label="贴链接">
+    <label for="links" id="links-label"></label>
+    <textarea id="links" spellcheck="false" autocomplete="off" placeholder="https://mp.weixin.qq.com/s/…&#10;一行一条。连标题一起粘贴也行，会自动挑出链接。"></textarea>
+    <div class="inbox-fields">
+      <div class="f">
+        <label for="who">你的称呼（选填）</label>
+        <input id="who" type="text" autocomplete="name" maxlength="40" placeholder="比如：张老师">
+      </div>
+      <div class="f" id="code-wrap">
+        <label for="code">口令</label>
+        <input id="code" type="password" autocomplete="off" aria-describedby="code-hint" placeholder="收链接用的口令">
+        <span class="hint" id="code-hint">口令向页面主人要；输对一次，这台设备会记住。</span>
+      </div>
+    </div>
+    <div class="inbox-row">
+      <span class="inbox-info" id="links-info" aria-live="polite"></span>
+      <button id="add" class="btn btn-primary" type="button"></button>
+    </div>
+  </section>
+
+  <section class="toolbar" aria-label="筛选">
+    <div class="status" id="status"></div>
+    <input id="q" class="search" type="search" placeholder="搜标题、公众号、说明、链接" aria-label="搜索">
+    <div class="chips" id="contest-chips" role="group" aria-label="按赛事筛选"></div>
+    <div class="chips" id="cat-chips" role="group" aria-label="按类别筛选"></div>
+  </section>
+
+  <main id="list" aria-live="polite"></main>
+
+  <footer class="foot" id="foot"><span>公众号文章是二手材料，规则类说法以官方通知原文为准。</span></footer>
+</div>
+
+<dialog id="viewer" aria-labelledby="vw-title">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2 id="vw-title"></h2>
+      <button class="x" type="button" data-close aria-label="关闭">×</button>
+    </div>
+    <div class="sheet-main"><div class="detail" id="vw-body"></div></div>
+    <div class="sheet-foot">
+      <button class="btn" type="button" data-close>关闭</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  "use strict";
+
+  /* 数据放在 Supabase：表 clips 公开可读；新链接只能经 clip_add 函数写入，要带口令。 */
+  var API = "https://xiwcznqcddzlisnxbwks.supabase.co/rest/v1";
+  var KEY = "sb_publishable_XC9qXupgKK7uSraKPo907g_zuTHpEJO";
+  var FIELDS = "id,skill,url,title,account,contest,category,note,submitter,fetch_error,created_at,updated_at,fetched_at";
+  var PAGE = 1000;
+
+  /* 类别与赛事名单要和同步脚本里的 CATEGORIES / CONTESTS 保持一致。 */
+  var SKILLS = {
+    math: {
+      name: "数学建模",
+      sub: "国赛 CUMCM · 美赛 MCM/ICM · 研赛「华为杯」",
+      contests: ["国赛", "美赛", "研赛", "通用"],
+      cats: ["规则通知", "赛题解读", "模型方法", "编程求解", "论文写作", "备赛经验"],
+      example: { title: "国赛 AI 工具使用声明怎么写：两句原文与详情说明四项", account: "公众号名称", contest: "国赛", category: "规则通知", excerpt: "讲论文里的「AI工具使用声明」两句原文怎么选、支撑材料里的使用详情写哪四项。交卷前对一遍。" }
+    },
+    stat: {
+      name: "统计建模",
+      sub: "全国大学生统计建模大赛",
+      contests: null,
+      cats: ["规则通知", "选题", "数据与方法", "论文写作", "答辩", "获奖作品", "备赛经验"],
+      example: { title: "统计建模大赛正文 16000 字符怎么数：计空格、只数正文", account: "公众号名称", category: "规则通知", excerpt: "正文字符数怎么在 Word 里量、哪些部分不算。定稿前量一遍，超了会取消资格。" }
+    },
+    market: {
+      name: "市场调研",
+      sub: "全国大学生市场调查与分析大赛",
+      contests: null,
+      cats: ["规则通知", "研究选题", "问卷与抽样", "调查实施", "分析与结论", "报告文本", "展示答辩", "获奖作品", "备赛经验"],
+      example: { title: "市调大赛打分表逐项拆：调查实施 20 分到底拿在哪", account: "公众号名称", category: "调查实施", excerpt: "按评委看的五件事拆调查实施这一项，附质量控制的写法。写报告第四章前翻。" }
+    },
+    innovation: {
+      name: "创赛",
+      sub: "国创赛 · 挑战杯 · 三创赛 · 其他创赛",
+      contests: ["国创赛", "挑战杯", "三创赛", "其他创赛"],
+      cats: ["规则通知", "选题立项", "商业计划书", "路演答辩", "获奖项目", "备赛经验"],
+      example: { title: "国创赛高教主赛道评分表怎么读：个人成长占 30 分", account: "公众号名称", contest: "国创赛", category: "规则通知", excerpt: "创意组四项分值怎么分配、个人成长这一项最容易漏写什么。改计划书前对一遍。" }
+    }
+  };
+  var ORDER = ["math", "stat", "market", "innovation"];
+  var SHOW_STEP = 120;
+
+  var state = {
+    tab: "math", cat: "全部", contest: "全部", q: "",
+    clips: [], loaded: false, loadError: "", adding: false, viewing: null, shown: SHOW_STEP
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "class") n.className = attrs[k];
+      else if (k.slice(0, 2) === "on") n.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== null && attrs[k] !== undefined && attrs[k] !== false) n.setAttribute(k, attrs[k]);
+    });
+    (kids || []).forEach(function (c) { if (c) n.appendChild(typeof c === "string" ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+  function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : ""; }
+  function fmtDate(iso) {
+    if (!iso) return "";
+    var d = new Date(iso); if (isNaN(d)) return "";
+    var now = new Date();
+    var md = (d.getMonth() + 1) + "月" + d.getDate() + "日";
+    return d.getFullYear() === now.getFullYear() ? md : d.getFullYear() + "年" + md;
+  }
+  function isFetched(c) { return !!(c.fetchedAt || c.title); }
+  /* 状态：todo 待整理 / failed 没抓下来 / done 已整理 */
+  function stateOf(c) { return isFetched(c) ? "done" : (c.fetchError ? "failed" : "todo"); }
+  var STATE_TEXT = { todo: "待整理", failed: "没抓下来", done: "已整理" };
+  function pill(c) { var s = stateOf(c); return el("span", { class: "pill " + s, text: STATE_TEXT[s] }); }
+  var toastTimer;
+  function toast(msg) {
+    var t = document.querySelector(".toast");
+    if (!t) { t = el("div", { class: "toast", role: "status" }); document.body.appendChild(t); }
+    t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 3600);
+  }
+
+  /* ---------- 链接 ---------- */
+  function normUrl(u) {
+    var s = String(u || "").replace(/^[ \t\n\r\f\v\u00a0\u3000\ufeff]+|[ \t\n\r\f\v\u00a0\u3000\ufeff]+$/g, "").replace(/[)）】」。，,;；!！]+$/, "");
+    var i = s.indexOf("#"); if (i >= 0) s = s.slice(0, i);
+    s = s.replace(/^(https?:\/\/[^\/?]+)/i, function (h) { return h.toLowerCase(); });
+    var m = /^https?:\/\/mp\.weixin\.qq\.com\/s\/([A-Za-z0-9_-]+)/.exec(s);
+    if (m) return "https://mp.weixin.qq.com/s/" + m[1];
+    var q = /^https?:\/\/mp\.weixin\.qq\.com\/s\/?\?(.+)$/.exec(s);
+    if (q) {
+      var kv = {}; q[1].split("&").forEach(function (p) { var i = p.indexOf("="); if (i > 0) kv[p.slice(0, i)] = p.slice(i + 1); });
+      var keep = ["__biz", "mid", "idx", "sn"].filter(function (k) { return Object.prototype.hasOwnProperty.call(kv, k); });
+      if (keep.length === 4) return "https://mp.weixin.qq.com/s?" + keep.map(function (k) { return k + "=" + kv[k]; }).join("&");
+      return "https://mp.weixin.qq.com/s?" + q[1];
+    }
+    return s.replace(/\/+$/, "");
+  }
+  /* 去重用：同一篇的 http 与 https 算一条。和库里 clip_url_key()、同步脚本里 url_key() 是同一个算法，改一处要三处一起改 */
+  function urlKey(u) { return normUrl(u).replace(/^https?:\/\//i, "").toLowerCase(); }
+  function extractUrls(text) {
+    var found = String(text || "").match(/https?:\/\/[^\s<>"'，。；、）】」]+/gi) || [];
+    var seen = {}, out = [];
+    found.forEach(function (u) { var n = normUrl(u), k = urlKey(u); if (n && !seen[k]) { seen[k] = 1; out.push(n); } });
+    return out;
+  }
+  function knownUrls() { var m = {}; state.clips.forEach(function (c) { if (c.url) m[urlKey(c.url)] = c; }); return m; }
+  function shortUrl(u) { return String(u || "").replace(/^https?:\/\//i, ""); }
+
+  /* ---------- 读写 ---------- */
+  function headers(extra) {
+    var h = { apikey: KEY, Authorization: "Bearer " + KEY };
+    Object.keys(extra || {}).forEach(function (k) { h[k] = extra[k]; });
+    return h;
+  }
+  function fromRow(r) {
+    return { id: r.id, skill: r.skill, url: r.url, title: r.title || "", account: r.account || "", contest: r.contest || "",
+      category: r.category || "", note: r.note || "", submitter: r.submitter || "",
+      fetchError: r.fetch_error || "", createdAt: r.created_at, updatedAt: r.updated_at, fetchedAt: r.fetched_at };
+  }
+  function loadAll() {
+    var out = [];
+    function page(from) {
+      return fetch(API + "/clips?select=" + FIELDS + "&order=created_at.desc,id.asc&offset=" + from + "&limit=" + PAGE, { headers: headers() })
+        .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
+        .then(function (rows) { out = out.concat(rows); return rows.length === PAGE ? page(from + PAGE) : out; });
+    }
+    return page(0);
+  }
+  function reload() {
+    return loadAll().then(function (rows) {
+      state.clips = rows.map(fromRow).filter(function (c) { return SKILLS[c.skill]; });
+      state.loaded = true; state.loadError = "";
+      render();
+    }, function () {
+      /* 已收的资料没读到就不知道哪些链接收过，这时不让收 */
+      state.loaded = true;
+      state.loadError = "资料读不出来。网络不稳时刷新一下再试。";
+      render();
+    });
+  }
+
+  /* ---------- 渲染 ---------- */
+  function clipsOf(key) { return state.clips.filter(function (c) { return c.skill === key; }); }
+  function canAdd() { return state.loaded && !state.loadError; }
+
+  function renderTabs() {
+    var nav = $("tabs"); nav.textContent = "";
+    ORDER.forEach(function (key) {
+      var s = SKILLS[key], list = clipsOf(key);
+      var todo = list.filter(function (c) { return !isFetched(c); }).length;
+      var meta = el("span", { class: "tab-meta" }, [
+        el("span", { text: state.loaded ? list.length + " 篇" : "— 篇" }),
+        todo ? el("span", { class: "todo-n", text: todo + " 条待整理" }) : null
+      ]);
+      nav.appendChild(el("button", {
+        class: "tab", type: "button", role: "tab", "data-key": key, id: "tab-" + key,
+        "aria-selected": String(state.tab === key), "aria-controls": "list", tabindex: state.tab === key ? "0" : "-1",
+        onclick: function () { switchTab(key); }
+      }, [el("span", { class: "tab-name", text: s.name }), el("span", { class: "tab-sub", text: s.sub }), meta]));
+    });
+  }
+
+  function savedCode() { return store("clips.code") || ""; }
+
+  function renderInbox() {
+    var s = SKILLS[state.tab];
+    var lab = $("links-label"); lab.textContent = "";
+    lab.append("往"); lab.appendChild(el("b", { text: "「" + s.name + "」" })); lab.append("里贴公众号文章的链接");
+    var urls = extractUrls($("links").value), known = knownUrls();
+    var dup = urls.filter(function (u) { return known[urlKey(u)]; }).length, fresh = urls.length - dup;
+    var info = $("links-info");
+    info.classList.remove("warn");
+    if (!$("links").value.trim()) info.textContent = "只要链接，别的不用填。";
+    else if (!urls.length) { info.textContent = "没认出链接，链接要以 http:// 或 https:// 开头。"; info.classList.add("warn"); }
+    else info.textContent = "认出 " + urls.length + " 条链接" + (dup ? "，其中 " + dup + " 条之前收过，会跳过" : "") + "。";
+    $("code-wrap").hidden = !!savedCode();
+    var btn = $("add");
+    btn.textContent = state.adding ? "正在收…" : "收进「" + s.name + "」" + (fresh > 1 ? "（" + fresh + " 条）" : "");
+    btn.disabled = !canAdd() || state.adding || !fresh;
+    $("links").disabled = !canAdd();
+    btn.title = canAdd() ? "" : (state.loadError ? "已收的资料没读出来，刷新页面后再收" : "正在读取已收的资料，读完就能收");
+  }
+
+  function chip(label, pressed, onclick, count) {
+    return el("button", { class: "chip", type: "button", "aria-pressed": String(pressed), onclick: onclick },
+      [label + (count !== undefined ? " " + count : "")]);
+  }
+
+  function renderChips() {
+    var s = SKILLS[state.tab], base = clipsOf(state.tab).filter(isFetched);
+    var cw = $("contest-chips"); cw.textContent = "";
+    cw.hidden = !s.contests || !base.length;
+    if (s.contests) {
+      cw.appendChild(el("span", { class: "chip-label", text: "赛事" }));
+      ["全部"].concat(s.contests).forEach(function (c) {
+        var n = c === "全部" ? base.length : base.filter(function (x) { return x.contest === c; }).length;
+        cw.appendChild(chip(c, state.contest === c, function () { state.contest = c; state.shown = SHOW_STEP; render(); }, n));
+      });
+    }
+    var inContest = s.contests && state.contest !== "全部" ? base.filter(function (x) { return x.contest === state.contest; }) : base;
+    var kw = $("cat-chips"); kw.textContent = "";
+    kw.hidden = !base.length;
+    kw.appendChild(el("span", { class: "chip-label", text: "类别" }));
+    ["全部"].concat(s.cats).forEach(function (c) {
+      var n = c === "全部" ? inContest.length : inContest.filter(function (x) { return x.category === c; }).length;
+      kw.appendChild(chip(c, state.cat === c, function () { state.cat = c; state.shown = SHOW_STEP; render(); }, n));
+    });
+    $("q").hidden = clipsOf(state.tab).length < 2;
+  }
+
+  function renderStatus() {
+    var list = clipsOf(state.tab), st = $("status");
+    st.textContent = "";
+    if (!state.loaded || !list.length) return;
+    var todo = list.filter(function (c) { return !isFetched(c); }).length;
+    st.textContent = todo ? "有 " + todo + " 条刚收进来，还没整理；整理好以后会补上标题、分类和说明。" : "这一栏都已整理好。";
+  }
+
+  function filtered() {
+    var s = SKILLS[state.tab], q = state.q.trim().toLowerCase();
+    var filtering = state.cat !== "全部" || (s.contests && state.contest !== "全部");
+    var list = clipsOf(state.tab).filter(function (c) {
+      if (!isFetched(c)) { if (filtering) return false; }
+      else {
+        if (s.contests && state.contest !== "全部" && c.contest !== state.contest) return false;
+        if (state.cat !== "全部" && c.category !== state.cat) return false;
+      }
+      if (!q) return true;
+      return [c.title, c.account, c.note, c.url].some(function (t) { return (t || "").toLowerCase().indexOf(q) >= 0; });
+    });
+    return list.sort(function (a, b) {
+      var fa = isFetched(a) ? 1 : 0, fb = isFetched(b) ? 1 : 0;
+      if (fa !== fb) return fa - fb;
+      return String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
+    });
+  }
+
+  function linkCard(c) {
+    var failed = stateOf(c) === "failed";
+    return el("button", { class: "card link-only", type: "button", onclick: function () { openViewer(c.id); } }, [
+      el("div", { class: "card-body" }, [
+        el("p", { class: "card-wait", text: failed ? "这条没抓下来" : "收到了，待整理" }),
+        el("p", { class: "card-url", text: shortUrl(c.url) }),
+        failed ? el("p", { class: "card-err", text: c.fetchError }) : null,
+        el("div", { class: "card-foot" }, [el("span", { text: (c.createdAt ? fmtDate(c.createdAt) + " " : "") + (c.submitter ? c.submitter + " 贴的" : "贴的") }), pill(c)])
+      ])
+    ]);
+  }
+
+  function cardFor(c) {
+    if (!isFetched(c)) return linkCard(c);
+    var s = SKILLS[c.skill];
+    var meta = el("div", { class: "card-meta" }, [
+      c.account ? el("span", { class: "acct", text: c.account }) : null,
+      c.createdAt ? el("span", { text: fmtDate(c.createdAt) }) : null,
+      s.contests && c.contest ? el("span", { class: "tag plain", text: c.contest }) : null,
+      c.category ? el("span", { class: "tag", text: c.category }) : null
+    ]);
+    return el("button", { class: "card", type: "button", onclick: function () { openViewer(c.id); } }, [
+      el("div", { class: "card-body" }, [
+        el("h3", { class: "card-title", text: c.title || "（无标题）" }),
+        meta,
+        c.note ? el("p", { class: "card-excerpt", text: c.note.slice(0, 240) }) : null,
+        el("div", { class: "card-foot" }, [el("span", { text: c.submitter ? c.submitter + " 推荐" : "" }), pill(c)])
+      ])
+    ]);
+  }
+
+  function ghostCard(key) {
+    var e = SKILLS[key].example;
+    return el("div", { class: "card ghost", "aria-label": "示例卡片" }, [
+      el("div", { class: "card-body" }, [
+        el("div", { class: "card-meta" }, [el("span", { class: "ghost-label", text: "示例" }), el("span", { text: "整理好以后长这样" })]),
+        el("h3", { class: "card-title", text: e.title }),
+        el("div", { class: "card-meta" }, [
+          el("span", { class: "acct", text: e.account }),
+          e.contest ? el("span", { class: "tag plain", text: e.contest }) : null,
+          el("span", { class: "tag", text: e.category })
+        ]),
+        el("p", { class: "card-excerpt", text: e.excerpt }),
+        el("div", { class: "card-foot" }, [el("span", { text: "一句话说明 · 原文链接" }), el("span", { class: "pill done", text: "已整理" })])
+      ])
+    ]);
+  }
+
+  function renderList() {
+    var box = $("list"); box.textContent = "";
+    var s = SKILLS[state.tab];
+    if (!state.loaded) { box.appendChild(el("p", { class: "noresult", text: "正在读取已收的资料…" })); return; }
+    if (state.loadError) { box.appendChild(el("p", { class: "noresult", text: state.loadError })); return; }
+    var all = clipsOf(state.tab);
+    if (!all.length) {
+      box.appendChild(el("div", { class: "empty" }, [
+        el("div", null, [
+          el("h2", { text: s.name + "这一栏还没有资料" }),
+          el("p", { text: "这里只收链接，一条链接一张卡片。" }),
+          el("ol", null, [
+            el("li", { text: "在公众号文章右上角点「复制链接」，贴到上面的框里，点「收进「" + s.name + "」」。" }),
+            el("li", { text: "之后会统一补上标题和公众号、分好类、写一句这篇讲什么，卡片变成右边的样子。" })
+          ])
+        ]),
+        ghostCard(state.tab)
+      ]));
+      return;
+    }
+    var list = filtered();
+    if (!list.length) { box.appendChild(el("p", { class: "noresult", text: "没有符合筛选条件的资料。换个类别或清空搜索试试。" })); return; }
+    var grid = el("div", { class: "grid" });
+    list.slice(0, state.shown).forEach(function (c) { grid.appendChild(cardFor(c)); });
+    box.appendChild(grid);
+    if (list.length > state.shown) {
+      box.appendChild(el("div", { style: "display:grid;padding-top:14px" }, [
+        el("button", { class: "btn more", type: "button", onclick: function () { state.shown += SHOW_STEP; renderList(); } },
+          ["再显示 " + Math.min(SHOW_STEP, list.length - state.shown) + " 篇（共 " + list.length + " 篇）"])
+      ]));
+    }
+  }
+
+  function render() {
+    document.body.setAttribute("data-tab", state.tab);
+    renderTabs(); renderInbox(); renderChips(); renderStatus(); renderList();
+  }
+
+  function switchTab(key) {
+    if (!SKILLS[key]) return;
+    state.tab = key; state.cat = "全部"; state.contest = "全部"; state.shown = SHOW_STEP;
+    store("clips.tab", key);
+    try { history.replaceState(null, "", "#" + key); } catch (e) {}
+    render();
+  }
+
+  /* ---------- 收链接 ---------- */
+  function addLinks() {
+    if (!canAdd() || state.adding) return;
+    var known = knownUrls(), key = state.tab, s = SKILLS[key];
+    var urls = extractUrls($("links").value);
+    var fresh = urls.filter(function (u) { return !known[urlKey(u)]; }), dup = urls.length - fresh.length;
+    if (!fresh.length) return;
+    var code = savedCode() || $("code").value.trim();
+    if (!code) { $("code-wrap").hidden = false; $("code").setAttribute("aria-invalid", "true"); $("code").focus(); toast("先填口令"); return; }
+    var who = $("who").value.trim();
+    store("clips.who", who || null);
+    state.adding = true; renderInbox();
+    var chunks = [];
+    for (var i = 0; i < fresh.length; i += 50) chunks.push(fresh.slice(i, i + 50));
+    var added = 0, skipped = dup;
+    var chain = Promise.resolve();
+    chunks.forEach(function (part) {
+      chain = chain.then(function () {
+        return fetch(API + "/rpc/clip_add", {
+          method: "POST", headers: headers({ "Content-Type": "application/json" }),
+          body: JSON.stringify({ p_code: code, p_skill: key, p_urls: part, p_submitter: who || null })
+        }).then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            if (!r.ok) { var e = new Error(j && j.message || ("http " + r.status)); e.badCode = r.status === 401 || /口令/.test(j && j.message || ""); throw e; }
+            added += j.added || 0; skipped += j.dup || 0;
+          });
+        });
+      });
+    });
+    chain.then(function () {
+      store("clips.code", code);
+      $("code").value = ""; $("code").removeAttribute("aria-invalid");
+      $("links").value = "";
+      toast(added + " 条已收进「" + s.name + "」" + (skipped ? "，" + skipped + " 条之前收过" : ""));
+    }, function (e) {
+      if (e.badCode) {
+        store("clips.code", null);
+        $("code-wrap").hidden = false; $("code").setAttribute("aria-invalid", "true"); $("code").focus();
+        toast("口令不对，链接还留在框里");
+      } else {
+        toast((added ? added + " 条收进去了，" : "") + "其余没收成，链接留在框里，稍后再点一次");
+      }
+    }).then(function () { state.adding = false; return reload(); });
+  }
+
+  /* ---------- 查看 ---------- */
+  function findClip(id) { for (var i = 0; i < state.clips.length; i++) if (state.clips[i].id === id) return state.clips[i]; return null; }
+
+  function openViewer(id) {
+    var c = findClip(id); if (!c) return;
+    state.viewing = id;
+    var s = SKILLS[c.skill], fetched = isFetched(c), link = safeUrl(c.url);
+    $("vw-title").textContent = fetched ? (c.title || "（无标题）") : STATE_TEXT[stateOf(c)] + "的链接";
+    var box = $("vw-body"); box.textContent = "";
+    box.appendChild(el("div", { class: "detail-meta" }, [
+      el("span", { class: "tag plain", text: s.name }),
+      c.account ? el("span", { text: c.account }) : null,
+      c.createdAt ? el("span", { text: "收于 " + fmtDate(c.createdAt) }) : null,
+      c.submitter ? el("span", { text: c.submitter + (fetched ? " 推荐" : " 贴的") }) : null,
+      s.contests && c.contest ? el("span", { class: "tag plain", text: c.contest }) : null,
+      c.category ? el("span", { class: "tag", text: c.category }) : null,
+      pill(c)
+    ]));
+    if (!fetched) {
+      box.appendChild(el("div", { class: "detail-url" }, [link ? el("a", { href: link, target: "_blank", rel: "noopener noreferrer", text: c.url }) : document.createTextNode(c.url || "")]));
+      box.appendChild(el("div", { class: "detail-note", text: c.fetchError ? "上次没抓下来：" + c.fetchError : "已经收到，整理好以后这里会出现标题和说明。" }));
+    }
+    if (c.note) box.appendChild(el("div", { class: "detail-note", text: c.note }));
+    if (fetched && link) box.appendChild(el("a", { class: "btn btn-primary btn-link", href: link, target: "_blank", rel: "noopener noreferrer", text: "打开原文" }));
+    document.body.setAttribute("data-tab", c.skill);
+    $("viewer").showModal();
+  }
+
+  /* ---------- 事件 ---------- */
+  $("q").addEventListener("input", function () { state.q = this.value; state.shown = SHOW_STEP; renderList(); });
+  $("links").addEventListener("input", renderInbox);
+  $("links").addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); addLinks(); } });
+  $("code").addEventListener("input", function () { this.removeAttribute("aria-invalid"); });
+  $("add").addEventListener("click", addLinks);
+  $("tabs").addEventListener("keydown", function (e) {
+    var i = ORDER.indexOf(state.tab);
+    if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
+      e.preventDefault();
+      var k = ORDER[(i + (e.key === "ArrowRight" ? 1 : ORDER.length - 1)) % ORDER.length];
+      switchTab(k); var t = $("tab-" + k); if (t) t.focus();
+    }
+  });
+  $("viewer").addEventListener("click", function (e) { if (e.target === this || e.target.closest("[data-close]")) $("viewer").close(); });
+  $("viewer").addEventListener("close", function () { state.viewing = null; document.body.setAttribute("data-tab", state.tab); });
+  window.addEventListener("hashchange", function () { var k = location.hash.slice(1); if (SKILLS[k] && k !== state.tab) switchTab(k); });
+
+  /* ---------- 启动 ---------- */
+  var h = location.hash.slice(1), saved = store("clips.tab");
+  state.tab = SKILLS[h] ? h : (SKILLS[saved] ? saved : "math");
+  $("who").value = store("clips.who") || "";
+  render();
+  reload();
+})();
+</script>
+</body>
+</html>

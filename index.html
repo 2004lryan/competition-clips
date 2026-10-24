@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>竞赛资料收集</title>
-<meta name="description" content="四类大学生竞赛的公众号文章收集：数学建模、统计建模、市场调研、创新创业">
+<meta name="description" content="四类大学生竞赛的资料收集（公众号文章，B站、抖音、小红书视频）：数学建模、统计建模、市场调研、创新创业">
 <style>
 /* 版式：顶部四块页签＝四类竞赛；页签下面是贴链接的收件框；再往下是卡片网格。
-   卡片有两种状态：待整理（只有链接）→ 已整理（有标题、公众号、分类和一句话说明）。
+   卡片有两种状态：待整理（只有链接）→ 已整理（有标题、公众号或账号、分类和一句话说明）。
    每个页签有自己的色：数学建模＝钢蓝，统计建模＝松绿，市场调研＝赭黄，创赛＝酒红。
    国内直连打开：不引外部字体和脚本，全部内联。 */
 :root {
@@ -189,7 +189,7 @@ dialog::backdrop { background: var(--overlay); }
 <div class="wrap">
   <header class="masthead">
     <h1>竞赛资料收集</h1>
-    <p>看到有用的公众号文章，把链接贴进对应的竞赛就行；标题、公众号、分类和一句话说明之后统一整理补上。</p>
+    <p>看到有用的公众号文章，或 B站、抖音、小红书上的视频和笔记，把链接贴进对应的竞赛就行；标题、账号、分类和一句话说明之后统一整理补上。</p>
   </header>
 
   <div id="banner" class="banner" role="status" hidden></div>
@@ -198,7 +198,7 @@ dialog::backdrop { background: var(--overlay); }
 
   <section class="inbox" aria-label="贴链接">
     <label for="links" id="links-label"></label>
-    <textarea id="links" spellcheck="false" autocomplete="off" placeholder="https://mp.weixin.qq.com/s/…&#10;一行一条。连标题一起粘贴也行，会自动挑出链接。"></textarea>
+    <textarea id="links" spellcheck="false" autocomplete="off" placeholder="https://mp.weixin.qq.com/s/…&#10;https://www.bilibili.com/video/BV…&#10;一行一条。抖音、小红书、B站的分享文字整段粘贴也行，会自动挑出链接。"></textarea>
     <div class="inbox-fields">
       <div class="f">
         <label for="who">你的称呼（选填）</label>
@@ -218,14 +218,14 @@ dialog::backdrop { background: var(--overlay); }
 
   <section class="toolbar" aria-label="筛选">
     <div class="status" id="status"></div>
-    <input id="q" class="search" type="search" placeholder="搜标题、公众号、说明、链接" aria-label="搜索">
+    <input id="q" class="search" type="search" placeholder="搜标题、账号、说明、链接" aria-label="搜索">
     <div class="chips" id="contest-chips" role="group" aria-label="按赛事筛选"></div>
     <div class="chips" id="cat-chips" role="group" aria-label="按类别筛选"></div>
   </section>
 
   <main id="list" aria-live="polite"></main>
 
-  <footer class="foot" id="foot"><span>公众号文章是二手材料，规则类说法以官方通知原文为准。</span></footer>
+  <footer class="foot" id="foot"><span>公众号文章和平台视频是二手材料，规则类说法以官方通知原文为准。</span></footer>
 </div>
 
 <dialog id="viewer" aria-labelledby="vw-title">
@@ -410,7 +410,7 @@ dialog::backdrop { background: var(--overlay); }
   function renderInbox() {
     var s = SKILLS[state.tab];
     var lab = $("links-label"); lab.textContent = "";
-    lab.append("往"); lab.appendChild(el("b", { text: "「" + s.name + "」" })); lab.append("里贴公众号文章的链接");
+    lab.append("往"); lab.appendChild(el("b", { text: "「" + s.name + "」" })); lab.append("里贴链接：公众号文章，或 B站、抖音、小红书的视频和笔记");
     var urls = extractUrls($("links").value), known = knownUrls();
     var dup = urls.filter(function (u) { return known[urlKey(u)]; }).length, fresh = urls.length - dup;
     var info = $("links-info");
@@ -540,8 +540,8 @@ dialog::backdrop { background: var(--overlay); }
           el("h2", { text: s.name + "这一栏还没有资料" }),
           el("p", { text: "这里只收链接，一条链接一张卡片。" }),
           el("ol", null, [
-            el("li", { text: "在公众号文章右上角点「复制链接」，贴到上面的框里，点「收进「" + s.name + "」」。" }),
-            el("li", { text: "之后会统一补上标题和公众号、分好类、写一句这篇讲什么，卡片变成右边的样子。" })
+            el("li", { text: "公众号文章在右上角点「复制链接」；B站、抖音、小红书点「分享」再「复制链接」。贴到上面的框里，点「收进「" + s.name + "」」。" }),
+            el("li", { text: "之后会统一补上标题和账号、分好类、写一句这条讲什么，卡片变成右边的样子。" })
           ])
         ]),
         ghostCard(state.tab)
